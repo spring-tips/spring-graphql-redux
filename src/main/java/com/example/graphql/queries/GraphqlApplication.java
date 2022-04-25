@@ -10,6 +10,9 @@ import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.Date;
 
 @SpringBootApplication
 public class GraphqlApplication {
@@ -47,7 +50,15 @@ class GreetingsController {
     Flux<Customer> customers() {
         return Flux.just(new Customer(1, "A"), new Customer(2, "B"));
     }
+
+    @SchemaMapping(typeName = "Customer")
+    Mono<Account> account(Customer customer) {
+        return Mono.just(new Account(customer.id(), new Date()));
+    }
 }
 
 record Customer(Integer id, String name) {
+}
+
+record Account(Integer id, Date signup) {
 }
