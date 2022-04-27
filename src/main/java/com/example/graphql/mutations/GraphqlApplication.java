@@ -24,6 +24,7 @@ public class GraphqlApplication {
 class MutationController {
 
     private final Map<Integer, Customer> db = new ConcurrentHashMap<>();
+
     private final AtomicInteger id = new AtomicInteger();
 
     @QueryMapping
