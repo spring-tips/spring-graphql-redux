@@ -1,0 +1,10 @@
+type Query {
+  hello: String
+}
+type Greeting {
+ greeting: String
+}
+
+type Subscription {
+ greetings: Greeting
+}

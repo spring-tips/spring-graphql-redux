@@ -19,18 +19,19 @@ import static org.springframework.security.config.Customizer.withDefaults;
  *
  * @author Josh Long
  */
-
 @Configuration
 @AutoConfigureBefore(SecurityAutoConfiguration.class)
 class GraphqlSecurityAutoConfiguration {
 
     @Configuration
-    @ConditionalOnProperty(prefix = "bootiful.graphql.security", name = "enabled", havingValue = "false", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "bootiful.graphql.security",
+            name = "enabled", havingValue = "false", matchIfMissing = true)
     public static class DefaultNoopSecurityAutoConfiguration {
 
         @Bean
         MapReactiveUserDetailsService authentication() {
-            return new MapReactiveUserDetailsService(User.withDefaultPasswordEncoder().username("user").password("pw").roles("USER").build());
+            return new MapReactiveUserDetailsService(User.withDefaultPasswordEncoder()
+                    .username("user").password("pw").roles("USER").build());
         }
 
         @Bean

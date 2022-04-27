@@ -30,6 +30,12 @@ We can try out an unauthenticated request like this:
  curl -v -u jlong:pw  http://localhost:8080/graphql \
      -H 'Content-Type: application/json' \
      --data-raw '{"query":"mutation { insert(name: \"Josh\") { id, name } }" }'
-```
-```
 
+``` 
+
+
+You can use the `rsc` CLI to exercise your RSocket endpoints, like so: 
+
+```shell 
+rsc --request --route=graphql --dataMimeType="application/graphql+json" --data='{"subscription":"{\n  greeting }' --debug tcp://example.spring.io:9191
+```

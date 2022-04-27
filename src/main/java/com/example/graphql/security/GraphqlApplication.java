@@ -9,9 +9,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
@@ -28,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * See the {@code README.md} for examples on how to use {@code curl} to
  * talk to these endpoints authenticated
  */
-//@EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
 @SpringBootApplication
 public class GraphqlApplication {
@@ -83,6 +80,7 @@ class CrmGraphqlController {
 class CrmService {
 
     private final Map<Integer, Customer> db = new ConcurrentHashMap<>();
+
     private final AtomicInteger id = new AtomicInteger();
 
     @Secured("ROLE_VIEWER")
