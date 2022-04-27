@@ -10,9 +10,7 @@
 * Spring Data 
 * Testing
 
-## Using CURL 
-
-
+## Using CURL
 We can try out an unauthenticated request like this:
 
 ```shell 
