@@ -14,44 +14,46 @@ import java.util.Date;
 @SpringBootApplication
 public class GraphqlApplication {
 
-    public static void main(String[] args) {
-        System.setProperty("spring.profiles.active", "queries");
-        SpringApplication.run(GraphqlApplication.class, args);
-    }
+	public static void main(String[] args) {
+		System.setProperty("spring.profiles.active", "queries");
+		SpringApplication.run(GraphqlApplication.class, args);
+	}
+
 }
 
 @Controller
 class GreetingsController {
 
-    private String greet(String name) {
-        return "Hello, " + name + "!";
-    }
+	private String greet(String name) {
+		return "Hello, " + name + "!";
+	}
 
-    @QueryMapping
-    String hello() {
-        return greet("World");
-    }
+	@QueryMapping
+	String hello() {
+		return greet("World");
+	}
 
-    @QueryMapping
-    String helloWithName(@Argument String name) {
-        return greet(name);
-    }
+	@QueryMapping
+	String helloWithName(@Argument String name) {
+		return greet(name);
+	}
 
-    //	@SchemaMapping (typeName = "Query", field = "customerById")
-    @QueryMapping
-    Customer customerById(@Argument Integer id) {
-        return new Customer(id, "Rossen");
-    }
+	// @SchemaMapping (typeName = "Query", field = "customerById")
+	@QueryMapping
+	Customer customerById(@Argument Integer id) {
+		return new Customer(id, "Rossen");
+	}
 
-    @QueryMapping
-    Flux<Customer> customers() {
-        return Flux.just(new Customer(1, "A"), new Customer(2, "B"));
-    }
+	@QueryMapping
+	Flux<Customer> customers() {
+		return Flux.just(new Customer(1, "A"), new Customer(2, "B"));
+	}
 
-    @SchemaMapping(typeName = "Customer")
-    Mono<Account> account(Customer customer) {
-        return Mono.just(new Account(customer.id(), new Date()));
-    }
+	@SchemaMapping(typeName = "Customer")
+	Mono<Account> account(Customer customer) {
+		return Mono.just(new Account(customer.id(), new Date()));
+	}
+
 }
 
 record Customer(Integer id, String name) {

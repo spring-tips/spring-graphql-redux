@@ -23,77 +23,75 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * See the {@code README.md} for examples on how to use {@code curl} to
- * talk to these endpoints authenticated
+ * See the {@code README.md} for examples on how to use {@code curl} to talk to these
+ * endpoints authenticated
  */
 @EnableReactiveMethodSecurity
 @SpringBootApplication
 public class GraphqlApplication {
 
-    public static void main(String[] args) {
-        System.setProperty("spring.profiles.active", "security");
-        SpringApplication.run(GraphqlApplication.class, args);
-    }
+	public static void main(String[] args) {
+		System.setProperty("spring.profiles.active", "security");
+		SpringApplication.run(GraphqlApplication.class, args);
+	}
 
-    @Bean
-    SecurityWebFilterChain authorization(ServerHttpSecurity http) {
-        return http
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(ae -> ae.anyExchange().permitAll())
-                .httpBasic(Customizer.withDefaults())
-                .build();
-    }
+	@Bean
+	SecurityWebFilterChain authorization(ServerHttpSecurity http) {
+		return http.csrf(ServerHttpSecurity.CsrfSpec::disable).authorizeExchange(ae -> ae.anyExchange().permitAll())
+				.httpBasic(Customizer.withDefaults()).build();
+	}
 
-    @Bean
-    MapReactiveUserDetailsService authentication() {
-        var users = Map
-                .of("jlong", new String[]{"USER"}, "rwinch", "ADMIN,USER".split(","))
-                .entrySet()
-                .stream()
-                .map(entry -> User.withDefaultPasswordEncoder().username(entry.getKey()).roles(entry.getValue()).password("pw").build())
-                .toList();
-        return new MapReactiveUserDetailsService(users);
-    }
+	@Bean
+	MapReactiveUserDetailsService authentication() {
+		var users = Map.of("jlong", new String[] { "USER" }, "rwinch", "ADMIN,USER".split(",")).entrySet().stream()
+				.map(entry -> User.withDefaultPasswordEncoder().username(entry.getKey()).roles(entry.getValue())
+						.password("pw").build())
+				.toList();
+		return new MapReactiveUserDetailsService(users);
+	}
+
 }
 
 @Controller
 class CrmGraphqlController {
 
-    private final CrmService crm;
+	private final CrmService crm;
 
-    CrmGraphqlController(CrmService crm) {
-        this.crm = crm;
-    }
+	CrmGraphqlController(CrmService crm) {
+		this.crm = crm;
+	}
 
-    @MutationMapping
-    Mono<Customer> insert(@Argument String name) {
-        return this.crm.insert(name);
-    }
+	@MutationMapping
+	Mono<Customer> insert(@Argument String name) {
+		return this.crm.insert(name);
+	}
 
-    @QueryMapping
-    Mono<Customer> customerById(@Argument Integer id) {
-        return this.crm.getCustomerById(id);
-    }
+	@QueryMapping
+	Mono<Customer> customerById(@Argument Integer id) {
+		return this.crm.getCustomerById(id);
+	}
+
 }
 
 @Service
 class CrmService {
 
-    private final Map<Integer, Customer> db = new ConcurrentHashMap<>();
+	private final Map<Integer, Customer> db = new ConcurrentHashMap<>();
 
-    private final AtomicInteger id = new AtomicInteger();
+	private final AtomicInteger id = new AtomicInteger();
 
-    @Secured("ROLE_VIEWER")
-    public Mono<Customer> getCustomerById(Integer id) {
-        return Mono.just(this.db.get(id));
-    }
+	@Secured("ROLE_VIEWER")
+	public Mono<Customer> getCustomerById(Integer id) {
+		return Mono.just(this.db.get(id));
+	}
 
-    @PreAuthorize("hasRole('ADMIN')")
-    public Mono<Customer> insert(String name) {
-        var newCustomer = new Customer(id.incrementAndGet(), name);
-        this.db.put(newCustomer.id(), newCustomer);
-        return Mono.just(newCustomer);
-    }
+	@PreAuthorize("hasRole('ADMIN')")
+	public Mono<Customer> insert(String name) {
+		var newCustomer = new Customer(id.incrementAndGet(), name);
+		this.db.put(newCustomer.id(), newCustomer);
+		return Mono.just(newCustomer);
+	}
+
 }
 
 record Customer(Integer id, String name) {

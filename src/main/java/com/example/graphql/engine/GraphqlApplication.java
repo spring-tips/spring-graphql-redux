@@ -12,22 +12,22 @@ import java.util.Map;
 @SpringBootApplication
 public class GraphqlApplication {
 
-    public static void main(String[] args) {
-        System.setProperty("spring.profiles.active", "engine");
-        SpringApplication.run(GraphqlApplication.class, args);
-    }
+	public static void main(String[] args) {
+		System.setProperty("spring.profiles.active", "engine");
+		SpringApplication.run(GraphqlApplication.class, args);
+	}
 
-    @Bean
-    RuntimeWiringConfigurer runtimeWiringConfigurer(CrmService crmService) {
-        return builder -> {
-            builder.type("Customer", wiring -> wiring
-                    .dataFetcher("profile", environment -> crmService.getProfileFor(environment.getSource())));
-            builder.type("Query", wiring -> wiring
-                    .dataFetcher("customers", env -> crmService.getCustomers())
-                    .dataFetcher("customerById",
-                            env -> crmService.getCustomerById(Integer.parseInt(env.getArgument("id")))));
-        };
-    }
+	@Bean
+	RuntimeWiringConfigurer runtimeWiringConfigurer(CrmService crmService) {
+		return builder -> {
+			builder.type("Customer", wiring -> wiring.dataFetcher("profile",
+					environment -> crmService.getProfileFor(environment.getSource())));
+			builder.type("Query",
+					wiring -> wiring.dataFetcher("customers", env -> crmService.getCustomers()).dataFetcher(
+							"customerById",
+							env -> crmService.getCustomerById(Integer.parseInt(env.getArgument("id")))));
+		};
+	}
 
 }
 
@@ -40,20 +40,18 @@ record Customer(Integer id, String name) {
 @Service
 class CrmService {
 
-    private final Map<Integer, Customer> customers = Map.of(
-            1, new Customer(1, "A"),
-            2, new Customer(2, "B"));
+	private final Map<Integer, Customer> customers = Map.of(1, new Customer(1, "A"), 2, new Customer(2, "B"));
 
-    Profile getProfileFor(Customer customer) {
-        return  new Profile( customer.id(), customer.id()) ;
-    }
+	Profile getProfileFor(Customer customer) {
+		return new Profile(customer.id(), customer.id());
+	}
 
-    Collection<Customer> getCustomers() {
-        return this.customers.values();
-    }
+	Collection<Customer> getCustomers() {
+		return this.customers.values();
+	}
 
-    Customer getCustomerById(Integer id) {
-        return this.customers.get(id);
-    }
+	Customer getCustomerById(Integer id) {
+		return this.customers.get(id);
+	}
 
 }

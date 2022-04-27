@@ -16,27 +16,27 @@ import java.util.stream.Stream;
 @SpringBootApplication
 public class GraphqlApplication {
 
-    public static void main(String[] args) {
-        System.setProperty("spring.profiles.active", "rsocket");
-        SpringApplication.run(GraphqlApplication.class, args);
-    }
+	public static void main(String[] args) {
+		System.setProperty("spring.profiles.active", "rsocket");
+		SpringApplication.run(GraphqlApplication.class, args);
+	}
+
 }
 
 @Controller
 class CrmRSocketGraphqlController {
 
-    @SubscriptionMapping
-    Flux<Map<String, String>> greetings() {
-        return Flux
-                .fromStream(Stream.generate(() -> Map.of("greeting", "Hello, world @ " + Instant.now().toString() + "!")))
-                .delayElements(Duration.ofSeconds(1))
-                .take(10);
-    }
+	@SubscriptionMapping
+	Flux<Map<String, String>> greetings() {
+		return Flux
+				.fromStream(
+						Stream.generate(() -> Map.of("greeting", "Hello, world @ " + Instant.now().toString() + "!")))
+				.delayElements(Duration.ofSeconds(1)).take(10);
+	}
 
-    @QueryMapping
-    String hello() {
-        return "Hello, world!";
-    }
+	@QueryMapping
+	String hello() {
+		return "Hello, world!";
+	}
 
 }
-

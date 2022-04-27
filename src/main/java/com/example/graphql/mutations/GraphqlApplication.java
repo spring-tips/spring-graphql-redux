@@ -14,31 +14,33 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SpringBootApplication
 public class GraphqlApplication {
 
-    public static void main(String[] args) {
-        System.setProperty("spring.profiles.active", "mutations");
-        SpringApplication.run(GraphqlApplication.class, args);
-    }
+	public static void main(String[] args) {
+		System.setProperty("spring.profiles.active", "mutations");
+		SpringApplication.run(GraphqlApplication.class, args);
+	}
+
 }
 
 @Controller
 class MutationController {
 
-    private final Map<Integer, Customer> db = new ConcurrentHashMap<>();
+	private final Map<Integer, Customer> db = new ConcurrentHashMap<>();
 
-    private final AtomicInteger id = new AtomicInteger();
+	private final AtomicInteger id = new AtomicInteger();
 
-    @QueryMapping
-    Customer customerById (@Argument Integer id) {
-        return this.db.get (id );
-    }
+	@QueryMapping
+	Customer customerById(@Argument Integer id) {
+		return this.db.get(id);
+	}
 
-    @MutationMapping
-    Customer insert(@Argument String name) {
-        var id = this.id.incrementAndGet();
-        var value = new Customer(id, name);
-        this.db.put(id, value);
-        return value;
-    }
+	@MutationMapping
+	Customer insert(@Argument String name) {
+		var id = this.id.incrementAndGet();
+		var value = new Customer(id, name);
+		this.db.put(id, value);
+		return value;
+	}
+
 }
 
 record Customer(Integer id, String name) {

@@ -15,48 +15,45 @@ import java.util.stream.Collectors;
 @SpringBootApplication
 public class GraphqlApplication {
 
-    public static void main(String[] args) {
-        System.setProperty("spring.profiles.active", "batch");
-        SpringApplication.run(GraphqlApplication.class, args);
-    }
+	public static void main(String[] args) {
+		System.setProperty("spring.profiles.active", "batch");
+		SpringApplication.run(GraphqlApplication.class, args);
+	}
+
 }
 
 @Controller
 class CrmGraphqlController {
 
-    private final CrmService crmService;
+	private final CrmService crmService;
 
-    CrmGraphqlController(CrmService crmService) {
-        this.crmService = crmService;
-    }
+	CrmGraphqlController(CrmService crmService) {
+		this.crmService = crmService;
+	}
 
-    @QueryMapping
-    Collection<Customer> customers() {
-        return crmService.getCustomers();
-    }
+	@QueryMapping
+	Collection<Customer> customers() {
+		return crmService.getCustomers();
+	}
 
-    @BatchMapping
-    Map<Customer, List<Order>> orders(List<Customer> customers) {
-        return this.crmService.getOrdersForCustomers(customers);
-    }
+	@BatchMapping
+	Map<Customer, List<Order>> orders(List<Customer> customers) {
+		return this.crmService.getOrdersForCustomers(customers);
+	}
+
 }
 
 @Service
 class CrmService {
 
-    Map<Customer, List<Order>> getOrdersForCustomers(List<Customer> customers) {
-        return customers
-                .stream()
-                .collect(Collectors.toMap(
-                        customer -> customer,
-                        customer -> List.of(new Order(1, customer.id()),
-                                new Order(2, customer.id()))));
-    }
+	Map<Customer, List<Order>> getOrdersForCustomers(List<Customer> customers) {
+		return customers.stream().collect(Collectors.toMap(customer -> customer,
+				customer -> List.of(new Order(1, customer.id()), new Order(2, customer.id()))));
+	}
 
-    Collection<Customer> getCustomers() {
-        return List.of(new Customer(1, "Madhura"),
-                new Customer(2, "Yuxin"));
-    }
+	Collection<Customer> getCustomers() {
+		return List.of(new Customer(1, "Madhura"), new Customer(2, "Yuxin"));
+	}
 
 }
 
