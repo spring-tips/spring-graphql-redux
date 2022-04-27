@@ -1,18 +1,13 @@
 
 type Query {
- hello: String
- helloWithName(name : String) : String
- customerById (id :ID ) : Customer
- customers : [Customer]
+    customerById(id: ID): Customer
 }
 
-type Account {
- id: ID
- signup : String
+type Mutation {
+    insert(name: String): Customer
 }
 
 type Customer {
-  id: ID
-  name : String
-  account: Account
+    id: ID
+    name : String
 }

@@ -1,6 +1,5 @@
 package com.example.graphql.engine;
 
-import graphql.schema.DataFetchingEnvironment;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -25,12 +24,9 @@ public class GraphqlApplication {
                     .dataFetcher("profile", environment -> crmService.getProfileFor(environment.getSource())));
             builder.type("Query", wiring -> wiring
                     .dataFetcher("customers", env -> crmService.getCustomers())
-                    .dataFetcher("customerById", env -> crmService.getCustomerById(getId(env))));
+                    .dataFetcher("customerById",
+                            env -> crmService.getCustomerById(Integer.parseInt(env.getArgument("id")))));
         };
-    }
-
-    private int getId(DataFetchingEnvironment e) {
-        return Integer.parseInt(e.getArgument("id"));
     }
 
 }

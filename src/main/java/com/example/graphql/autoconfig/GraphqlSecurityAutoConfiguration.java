@@ -25,7 +25,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 class GraphqlSecurityAutoConfiguration {
 
     @Configuration
-    @ConditionalOnProperty(prefix = "bootiful.graphql.security", name = "enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "bootiful.graphql.security", name = "enabled", havingValue = "false", matchIfMissing = true)
     public static class DefaultNoopSecurityAutoConfiguration {
 
         @Bean
