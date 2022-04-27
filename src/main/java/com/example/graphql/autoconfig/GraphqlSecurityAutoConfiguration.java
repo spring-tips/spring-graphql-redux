@@ -5,12 +5,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-
-import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * Turns off authorization for everything <em>unless</em> somebody specifies the property
@@ -21,26 +20,22 @@ import static org.springframework.security.config.Customizer.withDefaults;
  */
 @Configuration
 @AutoConfigureBefore(SecurityAutoConfiguration.class)
+@ConditionalOnProperty(prefix = "bootiful.graphql.security",
+        name = "enabled", havingValue = "false", matchIfMissing = true)
 class GraphqlSecurityAutoConfiguration {
 
-	@Configuration
-	@ConditionalOnProperty(prefix = "bootiful.graphql.security", name = "enabled", havingValue = "false",
-			matchIfMissing = true)
-	public static class DefaultNoopSecurityAutoConfiguration {
+    @Bean
+    SecurityWebFilterChain securityWebFilterChain() {
+        return new SecurityWebFilterChain() {
+            @Override
+            public Mono<Boolean> matches(ServerWebExchange exchange) {
+                return Mono.just(false);
+            }
 
-		@Bean
-		MapReactiveUserDetailsService authentication() {
-			return new MapReactiveUserDetailsService(
-					User.withDefaultPasswordEncoder().username("user").password("pw").roles("USER").build());
-		}
-
-		@Bean
-		SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) throws Exception {
-			return http.cors(withDefaults()).csrf(ServerHttpSecurity.CsrfSpec::disable)
-					.authorizeExchange(requests -> requests.anyExchange().permitAll()).httpBasic(withDefaults())
-					.build();
-		}
-
-	}
-
+            @Override
+            public Flux<WebFilter> getWebFilters() {
+                return Flux.empty();
+            }
+        };
+    }
 }
