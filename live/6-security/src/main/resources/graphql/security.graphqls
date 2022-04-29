@@ -1,0 +1,12 @@
+type Query {
+ customerById(id:ID): Customer
+}
+
+type Mutation {
+  insert (name: String): Customer
+}
+
+type Customer  {
+ id: ID
+ name : String
+}
