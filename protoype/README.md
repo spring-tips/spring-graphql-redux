@@ -37,3 +37,14 @@ You can use the `rsc` CLI to exercise your RSocket endpoints, like so:
 ```shell 
 rsc --request --route=graphql --dataMimeType="application/graphql+json" --data='{"subscription":"{\n  greeting }' --debug tcp://example.spring.io:9191
 ```
+
+If you want to query a Subscription, then use 
+
+
+```shell 
+java -jar rsc-0.9.1.jar    \
+  --stream   \
+  --route=graphql --dataMimeType="application/graphql+json" \
+  --data='{"query":"subscription {  greetings { greeting } }" }' \
+  --debug tcp://localhost:9191
+```
