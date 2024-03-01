@@ -30,7 +30,7 @@ public class GraphqlDataApplication {
         return args -> repository
                 .deleteAll()
                 .thenMany(Flux.just("Josh", "Jürgen", "Dave", "Madhura", "Mark", "Yuxin").map(name -> new Customer(null, name)).flatMap(repository::save))
-                .thenMany(repository.findAll(QCustomer.customer.name.startsWith("J").not()))
+                .thenMany(repository.findAll( com.example.graphqldata.QCustomer.customer.name.startsWith("J").not()))
                 .subscribe(System.out::println);
     }
 
