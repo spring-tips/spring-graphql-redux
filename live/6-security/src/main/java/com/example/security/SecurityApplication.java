@@ -37,10 +37,11 @@ public class SecurityApplication {
                         "rwinch", "ADMIN,USER".split(","))
                 .entrySet()
                 .stream()
-                .map(e -> User.withDefaultPasswordEncoder()
-                        .username(e.getKey())
-                        .password("pw")
-                        .roles(e.getValue())
+                .map(e -> User//
+                        .withDefaultPasswordEncoder()//
+                        .username(e.getKey())//
+                        .password("pw")//
+                        .roles(e.getValue())//
                         .build()
                 )
                 .toList();
